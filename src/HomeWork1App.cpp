@@ -28,6 +28,7 @@ class HomeWork1App : public AppBasic {
 	  void blackOutWindow(uint8_t* pixels);
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
 	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
+	  void square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 
 };
 
@@ -41,6 +42,8 @@ void HomeWork1App::setup()
 	blackOutWindow(myPixels);
 	horLine(myPixels,200,400,200,Color(500,500,500));
 	vertLine(myPixels,100,300,300,Color(500,500,500));
+	square(myPixels,200,100,200,Color(500,500,500));
+	
 }
 
 /* color the window by accessing the surface pixel's array directly. This is taken
@@ -83,6 +86,24 @@ void HomeWork1App::horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineC
 		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
 		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
 	}
+};
+
+/* Draw an empty square that uses both horLine and vertLine methods.
+ * parameter int x: the x-cordinate of the top left point of the square.
+ * parameter int y: the y-cordinate of the top left point of the square.
+ * parameter int sideLength: the length you want each side of the square to be.
+ * parameter Color8u lineColor: the color you want the line to be.
+ */
+void HomeWork1App::square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
+{
+	//top line
+	horLine(pixels,x,(x+sideLength),y,lineColor);
+	//right line
+	vertLine(pixels,y,(y+sideLength),(x+sideLength),lineColor);
+	//bottom line
+	horLine(pixels,x, (x+sideLength),(y+sideLength),lineColor);
+	//left line
+	vertLine(pixels,y,(y+sideLength),x,lineColor);
 };
 
 void HomeWork1App::mouseDown( MouseEvent event )
