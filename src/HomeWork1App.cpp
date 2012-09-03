@@ -27,6 +27,7 @@ class HomeWork1App : public AppBasic {
 	  //methods
 	  void blackOutWindow(uint8_t* pixels);
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
+	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
 
 };
 
@@ -38,7 +39,8 @@ void HomeWork1App::setup()
 
 	//call blackOutWindow method
 	blackOutWindow(myPixels);
-	horLine(myPixels, 200, 400, 200, Color(500,500,500));
+	horLine(myPixels,200,400,200,Color(500,500,500));
+	vertLine(myPixels,100,300,300,Color(500,500,500));
 }
 
 /* color the window by accessing the surface pixel's array directly. This is taken
@@ -58,6 +60,17 @@ void HomeWork1App::blackOutWindow(uint8_t* pixels)
 		}
 	}
 }; 
+
+//Draw a vertical line using the same approach as the horLine method
+void HomeWork1App::vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor)
+{
+	for (int y=y1; y<y2; y++) {
+		int offSet = 3*(x + y*kSurfaceSize);
+		pixels[offSet] = pixels[offSet] + lineColor.r; //red
+		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
+		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
+	}
+};
 
 /* This method should draw a horizontal line between two points. This is
  * a test method to try and draw something using the pixel array.
