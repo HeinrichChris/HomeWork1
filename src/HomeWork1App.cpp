@@ -29,6 +29,7 @@ class HomeWork1App : public AppBasic {
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
 	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
 	  void square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
+	  void filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 
 };
 
@@ -40,9 +41,10 @@ void HomeWork1App::setup()
 
 	//call blackOutWindow method
 	blackOutWindow(myPixels);
-	horLine(myPixels,200,400,200,Color(500,500,500));
-	vertLine(myPixels,100,300,300,Color(500,500,500));
-	square(myPixels,200,100,200,Color(500,500,500));
+	//horLine(myPixels,200,400,200,Color(500,500,500));
+	//vertLine(myPixels,100,300,300,Color(500,500,500));
+	//square(myPixels,200,100,200,Color(500,500,500));
+	filledSquare(myPixels,200,100,200,Color(500,500,500));
 	
 }
 
@@ -104,6 +106,19 @@ void HomeWork1App::square(uint8_t* pixels, int x, int y, int sideLength, Color8u
 	horLine(pixels,x, (x+sideLength),(y+sideLength),lineColor);
 	//left line
 	vertLine(pixels,y,(y+sideLength),x,lineColor);
+};
+
+/* Draw a filled in square that uses the horLine method
+ * parameter int x: the x-cordinate of the top left point of the square.
+ * parameter int y: the y-cordinate of the top left point of the square.
+ * parameter int sideLength: the length you want each side of the square to be.
+ * parameter Color8u lineColor: the color you want the line to be.
+ */
+void HomeWork1App::filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
+{
+	for (int i=y; i<(y+sideLength); i++) {
+		horLine(pixels,x,(x+sideLength),i,lineColor);
+	}
 };
 
 void HomeWork1App::mouseDown( MouseEvent event )
