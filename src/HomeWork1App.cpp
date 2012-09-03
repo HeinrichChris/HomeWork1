@@ -30,6 +30,7 @@ class HomeWork1App : public AppBasic {
 	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
 	  void square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
+	  void diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 
 };
 
@@ -44,7 +45,8 @@ void HomeWork1App::setup()
 	//horLine(myPixels,200,400,200,Color(500,500,500));
 	//vertLine(myPixels,100,300,300,Color(500,500,500));
 	//square(myPixels,200,100,200,Color(500,500,500));
-	filledSquare(myPixels,200,100,200,Color(500,500,500));
+	//filledSquare(myPixels,200,100,200,Color(500,500,500));
+	diagLine(myPixels,200,200,200,Color(500,500,500));
 	
 }
 
@@ -118,6 +120,27 @@ void HomeWork1App::filledSquare(uint8_t* pixels, int x, int y, int sideLength, C
 {
 	for (int i=y; i<(y+sideLength); i++) {
 		horLine(pixels,x,(x+sideLength),i,lineColor);
+	}
+};
+
+/* Draw a diagonal line
+ * parameter int x: the x-cordinate of the bottom point of the line.
+ * parameter int y: the y-cordinate of the bottom point of the line.
+ * parameter int sideLength: the length you want the line the be.
+ * parameter Color8u lineColor: the color you want the line to be.
+ */
+void HomeWork1App::diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
+{
+	int starty = y; //will be increased by 1 after each loop
+
+	for (int x1=x; x1<(x+sideLength); x1++) {
+		//change the pixel color
+		int offSet = 3*(x1 + starty * kSurfaceSize);
+		pixels[offSet] = pixels[offSet] + lineColor.r; //red
+		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
+		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
+		
+		starty++; //increase y by 1
 	}
 };
 
