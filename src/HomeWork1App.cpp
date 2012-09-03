@@ -17,12 +17,16 @@ class HomeWork1App : public AppBasic {
 
   private:
 	  // width and height of the screen
-	  static const int appWidth=800;
-	  static const int appHeight=600;
-	  static const int kSurfaceSize=1024;
+	  static const int kSurfaceSize=625;
 
 	  Surface* mySurface_;
 	  uint8_t* myPixels;
+
+	  //variables
+	  int squareStartX;
+	  int squareStartY;
+	  int squareLength;
+	  int cycleLevel;
 
 	  //methods
 	  void blackOutWindow(uint8_t* pixels);
@@ -40,13 +44,18 @@ void HomeWork1App::setup()
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	myPixels = (*mySurface_).getData();
 
-	//call blackOutWindow method
-	blackOutWindow(myPixels);
+	//initialize variables
+	squareStartX = 0;
+	squareStartY = 0;
+	squareLength = kSurfaceSize;
+	cycleLevel = 1;
+
+	//blackOutWindow(myPixels);
 	//horLine(myPixels,200,400,200,Color(500,500,500));
 	//vertLine(myPixels,100,300,300,Color(500,500,500));
-	//square(myPixels,200,100,200,Color(500,500,500));
+	//square(myPixels,squareStartX,squareStartY,squareLength,Color(500,500,500));
 	//filledSquare(myPixels,200,100,200,Color(500,500,500));
-	diagLine(myPixels,200,200,200,Color(500,500,500));
+	//diagLine(myPixels,0,0,400,Color(500,500,500));
 	
 }
 
@@ -58,8 +67,8 @@ void HomeWork1App::blackOutWindow(uint8_t* pixels)
 {
 	Color8u c = Color(0,0,0);
 
-	for (int y=0; y<appHeight; y++) {
-		for (int x=0; x<appWidth; x++) {
+	for (int y=0; y<kSurfaceSize; y++) {
+		for (int x=0; x<kSurfaceSize; x++) {
 			int offSet = 3*(x + y * kSurfaceSize);
 			pixels[offSet] = pixels[offSet] + c.r; //red
 			pixels[offSet+1] = pixels[offSet] + c.g; //green
@@ -150,6 +159,19 @@ void HomeWork1App::mouseDown( MouseEvent event )
 
 void HomeWork1App::update()
 {
+	if (cycleLevel = 1) {
+		if (squareLength <= 0) {
+			blackOutWindow(myPixels);
+			cycleLevel = 2;
+		}
+		else {
+			square(myPixels,squareStartX,squareStartY,squareLength,Color(500,500,500));
+			squareStartX = squareStartX + 20;
+			squareStartY = squareStartY + 20;
+			squareLength = squareLength - 40;
+		}
+	}
+
 }
 
 void HomeWork1App::draw()
