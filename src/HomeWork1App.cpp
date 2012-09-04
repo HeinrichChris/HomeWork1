@@ -26,14 +26,14 @@ class HomeWork1App : public AppBasic {
 	  int startY;
 
 	  //methods
-	  void blackOutWindow(uint8_t* pixels);
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
 	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
 	  void rectangle(uint8_t* pixels, int x, int y, int width, int length, Color8u lineColor);
-	  void filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
+	  void filledSquare(uint8_t* pixels, int x, int y, double sideLength, Color8u lineColor);
 	  void diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor);
 	  void checkerBoard(uint8_t* pixels, int startX, int startY);
+	  void tint(uint8_t* pixels, Color8u c);
 
 };
 
@@ -43,10 +43,10 @@ void HomeWork1App::setup()
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	myPixels = (*mySurface_).getData();
 	
-	filledSquare(myPixels,0,0,112.5,Color(.5,0,0));
-	filledSquare(myPixels,112.5,0,112.5,Color(.5,.5,.5));
-	//checkerBoard(myPixels,0,0);
-	//blackOutWindow(myPixels);
+	//filledSquare(myPixels,0,0,112.5,Color(.5,0,0));
+	//filledSquare(myPixels,112.5,0,112.5,Color(.5,.5,.5));
+	//tint(myPixels,Color(125.0,0,0));
+	checkerBoard(myPixels,20,20);
 	//horLine(myPixels,200,400,200,Color(500,500,500));
 	//vertLine(myPixels,100,300,300,Color(500,500,500));
 	//rectangle(myPixels,200,200,50,200,Color(500,500,500));
@@ -54,24 +54,6 @@ void HomeWork1App::setup()
 	//diagLine(myPixels,0,0,kSurfaceSize,Color(500,500,500));
 	//drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
 }
-
-/* color the window by accessing the surface pixel's array directly. This is taken
- * from Cary Willard's code and is being used for educational purpose to understand how to 
- * correctly access the surface pixel array. This will now appear in my final project.
- */
-void HomeWork1App::blackOutWindow(uint8_t* pixels)
-{
-	Color8u c = Color(0,0,0);
-
-	for (int y=0; y<kSurfaceSize; y++) {
-		for (int x=0; x<kSurfaceSize; x++) {
-			int offSet = 3*(x + y * kSurfaceSize);
-			pixels[offSet] = pixels[offSet] + c.r; //red
-			pixels[offSet+1] = pixels[offSet+1] + c.g; //green
-			pixels[offSet+2] = pixels[offSet+2] + c.b; //blue
-		}
-	}
-}; 
 
 //Draw a vertical line using the same approach as the horLine method
 void HomeWork1App::vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor)
@@ -121,7 +103,7 @@ void HomeWork1App::rectangle(uint8_t* pixels, int x, int y, int width, int lengt
  * parameter int sideLength: the length you want each side of the square to be.
  * parameter Color8u lineColor: the color you want the line to be.
  */
-void HomeWork1App::filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
+void HomeWork1App::filledSquare(uint8_t* pixels, int x, int y, double sideLength, Color8u lineColor)
 {
 	for (int i=y; i<(y+sideLength); i++) {
 		horLine(pixels,x,(x+sideLength),i,lineColor);
@@ -214,22 +196,39 @@ void HomeWork1App::drawCircle(uint8_t* pixels, int center_x, int center_y, int r
 
 void HomeWork1App::checkerBoard(uint8_t* pixels, int startX, int startY)
 {
-	for (int y=0; y<=8; y++) {
-		for (int x=0; x<=8; x++) {
-			if (startX=900) {
-				startX = 0;
+	int reverse = 0;
+	for (int y=0; y<7; y++) {
+		for (int x=0; x<8; x++) {
+			if (x%2 == 0) {
+				if (reverse == 0)
+					filledSquare(pixels,startX,startY,75,Color(25.0,50.0,75.0));
+				else
+					filledSquare(pixels,startX,startY,75,Color(25.0,75.0,75.0));
 			}
 			else {
-				if (x%2 == 0) {
-					filledSquare(pixels,startX,startY,112.5,Color(0,.25,0));
-				}
-				else {
-					filledSquare(pixels,startX,startY,112.5,Color(.5,.5,.5));
-				}
-				startX = startX + 112.5;
+				if (reverse == 0)
+					filledSquare(pixels,startX,startY,75,Color(25.0,75.0,75.0));
+				else
+					filledSquare(pixels,startX,startY,75,Color(25.0,50.0,75.0));
 			}
+			startX = startX + 75;
 		}
-		startY = startY + 112.5;
+		startY = startY + 75;
+		startX = 20;
+		if (reverse == 0)
+			reverse = 1;
+		else
+			reverse = 0;
+	}
+};
+
+void HomeWork1App::tint(uint8_t* pixels, Color8u c) 
+{
+	for (int y=0; y<kSurfaceSize; y++) {
+		for (int x=0; x<kSurfaceSize; x++) {
+			int offSet = 3*(x + y*kSurfaceSize);
+			pixels[offSet] = pixels[offSet] + c.r;
+		}
 	}
 };
 
@@ -245,7 +244,7 @@ void HomeWork1App::update()
 void HomeWork1App::draw()
 {
 	// clear out the window with black
-	gl::clear( Color( 1.0, 1.0, 1.0 ) );
+	gl::clear( Color( 0,0,0 ) );
 	gl::draw(*mySurface_);
 }
 
