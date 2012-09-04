@@ -17,25 +17,23 @@ class HomeWork1App : public AppBasic {
 
   private:
 	  // width and height of the screen
-	  static const int kSurfaceSize=625;
+	  static const int kSurfaceSize=900;
 
 	  Surface* mySurface_;
 	  uint8_t* myPixels;
 
-	  //variables
-	  int squareStartX;
-	  int squareStartY;
-	  int squareLength;
-	  int cycleLevel;
+	  int startX;
+	  int startY;
 
 	  //methods
 	  void blackOutWindow(uint8_t* pixels);
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
 	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
-	  void square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
+	  void rectangle(uint8_t* pixels, int x, int y, int width, int length, Color8u lineColor);
 	  void filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor);
+	  void checkerBoard(uint8_t* pixels, int startX, int startY);
 
 };
 
@@ -44,21 +42,17 @@ void HomeWork1App::setup()
 	//initialize surface
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	myPixels = (*mySurface_).getData();
-
-	//initialize variables
-	squareStartX = 0;
-	squareStartY = 0;
-	squareLength = kSurfaceSize;
-	cycleLevel = 1;
-
-	blackOutWindow(myPixels);
+	
+	filledSquare(myPixels,0,0,112.5,Color(.5,0,0));
+	filledSquare(myPixels,112.5,0,112.5,Color(.5,.5,.5));
+	//checkerBoard(myPixels,0,0);
+	//blackOutWindow(myPixels);
 	//horLine(myPixels,200,400,200,Color(500,500,500));
 	//vertLine(myPixels,100,300,300,Color(500,500,500));
-	//square(myPixels,squareStartX,squareStartY,squareLength,Color(500,500,500));
-	//filledSquare(myPixels,200,100,200,Color(500,500,500));
+	//rectangle(myPixels,200,200,50,200,Color(500,500,500));
+	//filledSquare(myPixels,0,0,112.5,Color(.239,.069,.049));
 	//diagLine(myPixels,0,0,kSurfaceSize,Color(500,500,500));
-	drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
-	
+	//drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
 }
 
 /* color the window by accessing the surface pixel's array directly. This is taken
@@ -109,16 +103,16 @@ void HomeWork1App::horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineC
  * parameter int sideLength: the length you want each side of the square to be.
  * parameter Color8u lineColor: the color you want the line to be.
  */
-void HomeWork1App::square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
+void HomeWork1App::rectangle(uint8_t* pixels, int x, int y, int width, int length, Color8u lineColor)
 {
 	//top line
-	horLine(pixels,x,(x+sideLength),y,lineColor);
+	horLine(pixels,x,(x+width),y,lineColor);
 	//right line
-	vertLine(pixels,y,(y+sideLength),(x+sideLength),lineColor);
+	vertLine(pixels,y,(y+length),(x+width),lineColor);
 	//bottom line
-	horLine(pixels,x, (x+sideLength),(y+sideLength),lineColor);
+	horLine(pixels,x, (x+width),(y+length),lineColor);
 	//left line
-	vertLine(pixels,y,(y+sideLength),x,lineColor);
+	vertLine(pixels,y,(y+length),x,lineColor);
 };
 
 /* Draw a filled in square that uses the horLine method
@@ -218,31 +212,40 @@ void HomeWork1App::drawCircle(uint8_t* pixels, int center_x, int center_y, int r
 	}
 };
 
+void HomeWork1App::checkerBoard(uint8_t* pixels, int startX, int startY)
+{
+	for (int y=0; y<=8; y++) {
+		for (int x=0; x<=8; x++) {
+			if (startX=900) {
+				startX = 0;
+			}
+			else {
+				if (x%2 == 0) {
+					filledSquare(pixels,startX,startY,112.5,Color(0,.25,0));
+				}
+				else {
+					filledSquare(pixels,startX,startY,112.5,Color(.5,.5,.5));
+				}
+				startX = startX + 112.5;
+			}
+		}
+		startY = startY + 112.5;
+	}
+};
+
 void HomeWork1App::mouseDown( MouseEvent event )
 {
 }
 
 void HomeWork1App::update()
 {
-	/*if (cycleLevel = 1) {
-		if (squareLength <= 0) {
-			blackOutWindow(myPixels);
-			cycleLevel = 2;
-		}
-		else {
-			square(myPixels,squareStartX,squareStartY,squareLength,Color(500,500,500));
-			squareStartX = squareStartX + 20;
-			squareStartY = squareStartY + 20;
-			squareLength = squareLength - 40;
-		}
-	} */
-
+	writeImage("daughtrc.png", *mySurface_);
 }
 
 void HomeWork1App::draw()
 {
 	// clear out the window with black
-	//gl::clear( Color( 0, 0, 0 ) );
+	gl::clear( Color( 1.0, 1.0, 1.0 ) );
 	gl::draw(*mySurface_);
 }
 
