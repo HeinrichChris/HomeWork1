@@ -35,6 +35,7 @@ class HomeWork1App : public AppBasic {
 	  void square(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void filledSquare(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
 	  void diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
+	  void drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor);
 
 };
 
@@ -50,12 +51,13 @@ void HomeWork1App::setup()
 	squareLength = kSurfaceSize;
 	cycleLevel = 1;
 
-	//blackOutWindow(myPixels);
+	blackOutWindow(myPixels);
 	//horLine(myPixels,200,400,200,Color(500,500,500));
 	//vertLine(myPixels,100,300,300,Color(500,500,500));
 	//square(myPixels,squareStartX,squareStartY,squareLength,Color(500,500,500));
 	//filledSquare(myPixels,200,100,200,Color(500,500,500));
-	//diagLine(myPixels,0,0,400,Color(500,500,500));
+	//diagLine(myPixels,0,0,kSurfaceSize,Color(500,500,500));
+	drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
 	
 }
 
@@ -71,8 +73,8 @@ void HomeWork1App::blackOutWindow(uint8_t* pixels)
 		for (int x=0; x<kSurfaceSize; x++) {
 			int offSet = 3*(x + y * kSurfaceSize);
 			pixels[offSet] = pixels[offSet] + c.r; //red
-			pixels[offSet+1] = pixels[offSet] + c.g; //green
-			pixels[offSet+2] = pixels[offSet] + c.b; //blue
+			pixels[offSet+1] = pixels[offSet+1] + c.g; //green
+			pixels[offSet+2] = pixels[offSet+2] + c.b; //blue
 		}
 	}
 }; 
@@ -83,8 +85,8 @@ void HomeWork1App::vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u line
 	for (int y=y1; y<y2; y++) {
 		int offSet = 3*(x + y*kSurfaceSize);
 		pixels[offSet] = pixels[offSet] + lineColor.r; //red
-		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
-		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
+		pixels[offSet+1] = pixels[offSet+1] + lineColor.g; //green
+		pixels[offSet+2] = pixels[offSet+2] + lineColor.b; //blue
 	}
 };
 
@@ -96,8 +98,8 @@ void HomeWork1App::horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineC
 	for (int x=x1; x<x2; x++) {
 		int offSet = 3*(x + y*kSurfaceSize);
 		pixels[offSet] = pixels[offSet] + lineColor.r; //red
-		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
-		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
+		pixels[offSet+1] = pixels[offSet+1] + lineColor.g; //green
+		pixels[offSet+2] = pixels[offSet+2] + lineColor.b; //blue
 	}
 };
 
@@ -146,10 +148,73 @@ void HomeWork1App::diagLine(uint8_t* pixels, int x, int y, int sideLength, Color
 		//change the pixel color
 		int offSet = 3*(x1 + starty * kSurfaceSize);
 		pixels[offSet] = pixels[offSet] + lineColor.r; //red
-		pixels[offSet+1] = pixels[offSet] + lineColor.g; //green
-		pixels[offSet+2] = pixels[offSet] + lineColor.b; //blue
+		pixels[offSet+1] = pixels[offSet+1] + lineColor.g; //green
+		pixels[offSet+2] = pixels[offSet+2] + lineColor.b; //blue
 		
 		starty++; //increase y by 1
+	}
+};
+
+// Draws a cirlce. Is taken from Dr. Brinkman's draw rings method.
+void HomeWork1App::drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor)
+{
+	if (r <= 0) return;
+
+	for (int y=center_y; y<center_y+r; y++) {
+		for (int x=center_x; x<center_x+r; x++) {
+			//boundary check
+			if (y < 0 || x < 0 || x >= kSurfaceSize || y >= kSurfaceSize) continue;
+
+			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
+			if(distanceFromCenter <= r) {
+				int offSet = 3*(x + y*kSurfaceSize);
+				pixels[offSet] = pixels[offSet]/2 + lineColor.r; //red
+				pixels[offSet+1] = pixels[offSet+1]/2 + lineColor.g; //green
+				pixels[offSet+2] = pixels[offSet+2]/2 + lineColor.b; //blue
+			}
+		}
+	}
+	for (int y=center_y; y>center_y-r; y--) {
+		for (int x=center_x; x<center_x+r; x++) {
+			//boundary check
+			if (y < 0 || x < 0 || x >= kSurfaceSize || y >= kSurfaceSize) continue;
+
+			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
+			if(distanceFromCenter <= r) {
+				int offSet = 3*(x + y*kSurfaceSize);
+				pixels[offSet] = pixels[offSet]/2 + lineColor.r; //red
+				pixels[offSet+1] = pixels[offSet+1]/2 + lineColor.g; //green
+				pixels[offSet+2] = pixels[offSet+2]/2 + lineColor.b; //blue
+			}
+		}
+	}
+	for (int y=center_y; y>center_y-r; y--) {
+		for (int x=center_x; x>center_x-r; x--) {
+			//boundary check
+			if (y < 0 || x < 0 || x >= kSurfaceSize || y >= kSurfaceSize) continue;
+
+			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
+			if(distanceFromCenter <= r) {
+				int offSet = 3*(x + y*kSurfaceSize);
+				pixels[offSet] = pixels[offSet]/2 + lineColor.r; //red
+				pixels[offSet+1] = pixels[offSet+1]/2 + lineColor.g; //green
+				pixels[offSet+2] = pixels[offSet+2]/2 + lineColor.b; //blue
+			}
+		}
+	}
+	for (int y=center_y; y<center_y+r; y++) {
+		for (int x=center_x; x>center_x-r; x--) {
+			//boundary check
+			if (y < 0 || x < 0 || x >= kSurfaceSize || y >= kSurfaceSize) continue;
+
+			int distanceFromCenter = (int)sqrt((double)((x-center_x)*(x-center_x) + (y-center_y)*(y-center_y)));
+			if(distanceFromCenter <= r) {
+				int offSet = 3*(x + y*kSurfaceSize);
+				pixels[offSet] = pixels[offSet]/2 + lineColor.r; //red
+				pixels[offSet+1] = pixels[offSet+1]/2 + lineColor.g; //green
+				pixels[offSet+2] = pixels[offSet+2]/2 + lineColor.b; //blue
+			}
+		}
 	}
 };
 
@@ -159,7 +224,7 @@ void HomeWork1App::mouseDown( MouseEvent event )
 
 void HomeWork1App::update()
 {
-	if (cycleLevel = 1) {
+	/*if (cycleLevel = 1) {
 		if (squareLength <= 0) {
 			blackOutWindow(myPixels);
 			cycleLevel = 2;
@@ -170,7 +235,7 @@ void HomeWork1App::update()
 			squareStartY = squareStartY + 20;
 			squareLength = squareLength - 40;
 		}
-	}
+	} */
 
 }
 
