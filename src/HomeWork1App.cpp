@@ -31,6 +31,7 @@ class HomeWork1App : public AppBasic {
 	  void drawCircle(uint8_t* pixels, double center_x, double center_y, double r, Color8u lineColor);
 	  void checkerBoard(uint8_t* pixels, int startX, int startY);
 	  void tint(uint8_t* pixels, Color8u c);
+	  void checkers(uint8_t*, double startx, double y, Color8u c);
 
 };
 
@@ -40,9 +41,14 @@ void HomeWork1App::setup()
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	myPixels = (*mySurface_).getData();
 
-	tint(myPixels,Color(125.0,0,0));
+	//tint(myPixels,Color(125.0,0,0));
 	checkerBoard(myPixels,20,20);
-	//drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
+	checkers(myPixels,132.5,57.5,Color(0,0,0)); //row 1
+	checkers(myPixels,57.5,132.5,Color(0,0,0)); //row 2
+	checkers(myPixels,132.5,207.5,Color(0,0,0)); //row 3
+	checkers(myPixels,57.5,432.5,Color(50,50,50)); //row 6
+	checkers(myPixels,132.5,507.5,Color(50,50,50)); //row 7
+	checkers(myPixels,57.5,582.5,Color(50,50,50)); //row 8
 }
 
 /* This method should draw a horizontal line between two points. This is
@@ -170,6 +176,15 @@ void HomeWork1App::tint(uint8_t* pixels, Color8u c)
 			int offSet = 3*(x + y*kSurfaceSize);
 			pixels[offSet] = pixels[offSet] + c.r;
 		}
+	}
+};
+
+//draw 8 checkers on the checkerboard
+void HomeWork1App::checkers(uint8_t* pixels, double startx, double y, Color8u c)
+{
+	for (int x=0; x<4; x++) {
+		drawCircle(pixels, startx, y, 27.5, c);
+		startx = startx + 150;
 	}
 };
 
