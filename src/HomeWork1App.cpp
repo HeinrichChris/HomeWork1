@@ -27,11 +27,8 @@ class HomeWork1App : public AppBasic {
 
 	  //methods
 	  void horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineColor);
-	  void vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor);
-	  void rectangle(uint8_t* pixels, int x, int y, int width, int length, Color8u lineColor);
-	  void filledSquare(uint8_t* pixels, int x, int y, double sideLength, Color8u lineColor);
-	  void diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor);
-	  void drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor);
+	  void rectangle(uint8_t* pixels, int startx, int starty, int width, int height, Color8u lineColor);
+	  void drawCircle(uint8_t* pixels, double center_x, double center_y, double r, Color8u lineColor);
 	  void checkerBoard(uint8_t* pixels, int startX, int startY);
 	  void tint(uint8_t* pixels, Color8u c);
 
@@ -42,29 +39,11 @@ void HomeWork1App::setup()
 	//initialize surface
 	mySurface_ = new Surface(kSurfaceSize,kSurfaceSize,false);
 	myPixels = (*mySurface_).getData();
-	
-	//filledSquare(myPixels,0,0,112.5,Color(.5,0,0));
-	//filledSquare(myPixels,112.5,0,112.5,Color(.5,.5,.5));
-	//tint(myPixels,Color(125.0,0,0));
+
+	tint(myPixels,Color(125.0,0,0));
 	checkerBoard(myPixels,20,20);
-	//horLine(myPixels,200,400,200,Color(500,500,500));
-	//vertLine(myPixels,100,300,300,Color(500,500,500));
-	//rectangle(myPixels,200,200,50,200,Color(500,500,500));
-	//filledSquare(myPixels,0,0,112.5,Color(.239,.069,.049));
-	//diagLine(myPixels,0,0,kSurfaceSize,Color(500,500,500));
 	//drawCircle(myPixels,312.5,312.5,100,Color(500,500,500));
 }
-
-//Draw a vertical line using the same approach as the horLine method
-void HomeWork1App::vertLine(uint8_t* pixels, int y1, int y2, int x, Color8u lineColor)
-{
-	for (int y=y1; y<y2; y++) {
-		int offSet = 3*(x + y*kSurfaceSize);
-		pixels[offSet] = pixels[offSet] + lineColor.r; //red
-		pixels[offSet+1] = pixels[offSet+1] + lineColor.g; //green
-		pixels[offSet+2] = pixels[offSet+2] + lineColor.b; //blue
-	}
-};
 
 /* This method should draw a horizontal line between two points. This is
  * a test method to try and draw something using the pixel array.
@@ -85,54 +64,15 @@ void HomeWork1App::horLine(uint8_t* pixels, int x1, int x2, int y, Color8u lineC
  * parameter int sideLength: the length you want each side of the square to be.
  * parameter Color8u lineColor: the color you want the line to be.
  */
-void HomeWork1App::rectangle(uint8_t* pixels, int x, int y, int width, int length, Color8u lineColor)
+void HomeWork1App::rectangle(uint8_t* pixels, int startx, int starty, int width, int height, Color8u lineColor)
 {
-	//top line
-	horLine(pixels,x,(x+width),y,lineColor);
-	//right line
-	vertLine(pixels,y,(y+length),(x+width),lineColor);
-	//bottom line
-	horLine(pixels,x, (x+width),(y+length),lineColor);
-	//left line
-	vertLine(pixels,y,(y+length),x,lineColor);
-};
-
-/* Draw a filled in square that uses the horLine method
- * parameter int x: the x-cordinate of the top left point of the square.
- * parameter int y: the y-cordinate of the top left point of the square.
- * parameter int sideLength: the length you want each side of the square to be.
- * parameter Color8u lineColor: the color you want the line to be.
- */
-void HomeWork1App::filledSquare(uint8_t* pixels, int x, int y, double sideLength, Color8u lineColor)
-{
-	for (int i=y; i<(y+sideLength); i++) {
-		horLine(pixels,x,(x+sideLength),i,lineColor);
-	}
-};
-
-/* Draw a diagonal line
- * parameter int x: the x-cordinate of the bottom point of the line.
- * parameter int y: the y-cordinate of the bottom point of the line.
- * parameter int sideLength: the length you want the line the be.
- * parameter Color8u lineColor: the color you want the line to be.
- */
-void HomeWork1App::diagLine(uint8_t* pixels, int x, int y, int sideLength, Color8u lineColor)
-{
-	int starty = y; //will be increased by 1 after each loop
-
-	for (int x1=x; x1<(x+sideLength); x1++) {
-		//change the pixel color
-		int offSet = 3*(x1 + starty * kSurfaceSize);
-		pixels[offSet] = pixels[offSet] + lineColor.r; //red
-		pixels[offSet+1] = pixels[offSet+1] + lineColor.g; //green
-		pixels[offSet+2] = pixels[offSet+2] + lineColor.b; //blue
-		
-		starty++; //increase y by 1
+	for (int y=starty; y<(starty+height); y++) {
+		horLine(pixels,startx,(startx+width),y,lineColor);
 	}
 };
 
 // Draws a cirlce. Is taken from Dr. Brinkman's draw rings method.
-void HomeWork1App::drawCircle(uint8_t* pixels, int center_x, int center_y, int r, Color8u lineColor)
+void HomeWork1App::drawCircle(uint8_t* pixels, double center_x, double center_y, double r, Color8u lineColor)
 {
 	if (r <= 0) return;
 
@@ -194,22 +134,23 @@ void HomeWork1App::drawCircle(uint8_t* pixels, int center_x, int center_y, int r
 	}
 };
 
+//draw a checkerboard
 void HomeWork1App::checkerBoard(uint8_t* pixels, int startX, int startY)
 {
 	int reverse = 0;
-	for (int y=0; y<7; y++) {
+	for (int y=0; y<8; y++) {
 		for (int x=0; x<8; x++) {
 			if (x%2 == 0) {
 				if (reverse == 0)
-					filledSquare(pixels,startX,startY,75,Color(25.0,50.0,75.0));
+					rectangle(pixels,startX,startY,75,75,Color(25.0,50.0,75.0));
 				else
-					filledSquare(pixels,startX,startY,75,Color(25.0,75.0,75.0));
+					rectangle(pixels,startX,startY,75,75,Color(500,100,100));
 			}
 			else {
 				if (reverse == 0)
-					filledSquare(pixels,startX,startY,75,Color(25.0,75.0,75.0));
+					rectangle(pixels,startX,startY,75,75,Color(500,100,100));
 				else
-					filledSquare(pixels,startX,startY,75,Color(25.0,50.0,75.0));
+					rectangle(pixels,startX,startY,75,75,Color(25.0,50.0,75.0));
 			}
 			startX = startX + 75;
 		}
@@ -243,8 +184,6 @@ void HomeWork1App::update()
 
 void HomeWork1App::draw()
 {
-	// clear out the window with black
-	gl::clear( Color( 0,0,0 ) );
 	gl::draw(*mySurface_);
 }
 
